@@ -50,6 +50,7 @@ public class LZWDecoder {
 	
 	public void decode ()
 	{
+		
 		for (int x = 0; x<256; x++)
 		{
 			char ch = (char)x; // this converts number into char 
@@ -88,7 +89,7 @@ public class LZWDecoder {
 			else // this is for the edge case if you get to a numebr that hasn't yet been added to the dictionary 
 			{
 				dict.put(counter, currString + currString.substring(0,1)); // puts the current and the first letter of the current into the dictionary 
-				//currString = currString + currString.substring(0,1); 
+				currString = currString + currString.substring(0,1); 
 			}
 			
 			nextBinString = binString.substring(0, bitNum);
@@ -106,6 +107,10 @@ public class LZWDecoder {
 			finalOutput+=dict.get(Integer.parseInt(currBinStringCopy, 2));
 		}
 	}
+
+	public String getFinalOutput(){ 
+		return (finalOutput); 
+	}
 	
 	//writes the 
 	public void writeToTxt(String outputFileName) throws FileNotFoundException
@@ -115,15 +120,6 @@ public class LZWDecoder {
 		output.close();
 	}
 
-	public static void main(String[] args) throws IOException {
-        LZW compressor = new LZW(9, "lzw-file1.txt");
-
-        String testString = compressor.encode("lzw-file1.txt");
-        System.out.println (testString);
-        
-        LZWDecoder expander = new LZWDecoder (testString, 9, "TestFile2");
-        
-    }
 //	class GFG {
 //		 
 //	    // Function to convert binary to decimal
