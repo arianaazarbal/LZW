@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Timer; 
+import java.io.IOException;
 
 public class LZWDecoder {
 	
@@ -14,9 +16,9 @@ public class LZWDecoder {
 	private byte [] byteArray;
 	private String finalOutput;
 	
-	public LZWDecoder(String binString, int bitNum, String outputFileName) throws IOException
+	public LZWDecoder(String binString, int bitNum, String outputFileName) throws IOException // this is the constructor 
 	{
-		this.dict = new HashMap <Integer, String>();
+		this.dict = new HashMap <Integer, String>(); // intializes the hash map 
 		this.bitNum = bitNum;
 		this.binString = binString;
 		this.finalOutput = "";
@@ -24,12 +26,13 @@ public class LZWDecoder {
 		
 //		File binFile = new File (binFileName);
 //		readBinFile(binFile);
-		decode();
-		writeToTxt(outputFileName);
+		decode(); //calls method below and decodes the binary file
+		writeToTxt(outputFileName); 
 		
 	}
 	
 	//reads the binary file into a string. not working, so I've bypassed this method for now and just input a binary string into the constructor.
+	/*
 	public void readBinFile(File binFile) throws IOException
 	{
 		FileInputStream is = new FileInputStream(binFile);
@@ -42,20 +45,21 @@ public class LZWDecoder {
 		is.close();
 	}
 	
+	*/ 
 
 	
 	public void decode ()
 	{
 		for (int x = 0; x<256; x++)
 		{
-			char ch = (char)x;
-			dict.put(x, String.valueOf(ch));
+			char ch = (char)x; // this converts number into char 
+			dict.put(x, String.valueOf(ch));// puts char into hasmap and assigns it a value 
 		}
-		String binStringCopy = binString;
-		String currBinString = binString.substring (0,bitNum);
-		binString= binString.substring(bitNum);
-		int currDecimal = Integer.parseInt(currBinString, 2);
-		String currString = dict.get(currDecimal);
+		String binStringCopy = binString; // makes copy of string 
+		String currBinString = binString.substring (0,bitNum); // gets the current part of the binary string you need 
+		binString= binString.substring(bitNum); // makes the binString smaller 
+		int currDecimal = Integer.parseInt(currBinString, 2); // changes the number into a number 
+		String currString = dict.get(currDecimal); // takes the number and find its string counterpart in the dictionary 
 //		finalOutput = currString;
 		
 		String nextBinString = "";
@@ -63,7 +67,7 @@ public class LZWDecoder {
 		String nextString= "";
 		
 //		String lastSymbolInDict = "";
-		
+		// same thing as above but for the next string 
 		nextBinString = binString.substring(0, bitNum);
 		binString= binString.substring(bitNum);
 		nextDecimal = Integer.parseInt(nextBinString, 2);
@@ -81,18 +85,18 @@ public class LZWDecoder {
 
 
 			}
-			else
+			else // this is for the edge case if you get to a numebr that hasn't yet been added to the dictionary 
 			{
-				dict.put(counter, currString + currString.substring(0,1));
-				currString = currString + currString.substring(0,1);
+				dict.put(counter, currString + currString.substring(0,1)); // puts the current and the first letter of the current into the dictionary 
+				//currString = currString + currString.substring(0,1); 
 			}
 			
 			nextBinString = binString.substring(0, bitNum);
 			binString= binString.substring(bitNum);
-			nextDecimal = Integer.parseInt(nextBinString, 2);
+			nextDecimal = Integer.parseInt(nextBinString, 2); 
 			nextString = dict.get(nextDecimal);
 			
-			counter++;
+			counter++; // increments counter 
 		}
 		
 		for (int x = 0; x<binStringCopy.length()/bitNum;x++)
@@ -110,7 +114,16 @@ public class LZWDecoder {
 		output.print (finalOutput);
 		output.close();
 	}
-	
+
+	public static void main(String[] args) throws IOException {
+        LZW compressor = new LZW(9, "lzw-file1.txt");
+
+        String testString = compressor.encode("lzw-file1.txt");
+        System.out.println (testString);
+        
+        LZWDecoder expander = new LZWDecoder (testString, 9, "TestFile2");
+        
+    }
 //	class GFG {
 //		 
 //	    // Function to convert binary to decimal
