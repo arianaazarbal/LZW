@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.*;
 
 public class LZWDecoder {
 	
@@ -24,7 +25,7 @@ public class LZWDecoder {
 		
 //		File binFile = new File (binFileName);
 //		readBinFile(binFile);
-		decode();
+		//decode();
 		writeToTxt(outputFileName);
 		
 	}
@@ -44,8 +45,22 @@ public class LZWDecoder {
 	}
 	
 */ 
+	public ArrayList<Integer> getList () throws IOException{
+		String binary = binString; // copies the binary string 
+		String temp=""; // creates temp varibale 
+		ArrayList <Integer> nums= new ArrayList<Integer> (); // creates an arraylist to put all the numbers when converting from binary to integers 
+		while (binary.length()>=bitNum){
+			int number=0; 
+			temp=binary.substring(0,bitNum); // takes substring and sets to temp
+			number=Integer.parseInt(temp,2); // turns binary to integer number 
+			nums.add(number); // adds the number into an arrayList of nums 
+			binary=binary.substring(bitNum);// chops the string off 
+		}
 
-	
+		return (nums); 
+	}
+
+	/*
 	public void decode ()
 	{
 		for (int x = 0; x<256; x++) // creating the dictionary 
@@ -110,13 +125,18 @@ public class LZWDecoder {
 			finalOutput+=dict.get(Integer.parseInt(currBinStringCopy, 2));
 		}
 	}
-	
+	*/ 
 	//writes the 
 	public void writeToTxt(String outputFileName) throws FileNotFoundException
 	{
 		PrintWriter output = new PrintWriter(outputFileName);
 		output.print (finalOutput);
 		output.close();
+	}
+
+		public static void main (String [] args) throws IOException{
+		LZWDecoder decoder = new LZWDecoder ("011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011", 9, "output"); 
+		System.out.println(decoder.getList()); 
 	}
 	
 //	class GFG {
