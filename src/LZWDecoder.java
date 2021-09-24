@@ -53,37 +53,43 @@ public class LZWDecoder {
 			char ch = (char)x;
 			dict.put(x, String.valueOf(ch));
 		}
+		ArrayList <Integer> nums= new ArrayList<Integer> (); // creates an arraylist to put all the numbers when converting from binary to integers 
 		String binStringCopy = binString; // makes copy of string 
 		String currBinString = binString.substring (0,bitNum); // takes the substring of the first probably 9 bits
 		binString= binString.substring(bitNum); // assings binString to the substring 
 		int currInt = Integer.parseInt(currBinString, 2); // changes the binary code to an integer 
-		String currString = dict.get(currInt); // gets the current string by finding the integer into the dictionary 
+		nums.add(currInt); 
 //		finalOutput = currString;
 		
-		String nextBinString = "";
-		int nextInt= 0;
-		String nextString= "";
+		String nextBinString = ""; // intializes the next string fr binary numbers 
+		int nextInt= 0; 
+		String nextString= ""; // initalizes next string for actual letters 
 		
 //		String lastSymbolInDict = "";
 		
-		nextBinString = binString.substring(0, bitNum);
-		binString= binString.substring(bitNum);
-		nextInt = Integer.parseInt(nextBinString, 2);
-		nextString = dict.get(nextInt);
-		
+		nextBinString = binString.substring(0, bitNum); // takes the substring of the binString to get the next character after taking the substring of current 
+		binString= binString.substring(bitNum); // chops string off 
+		nextInt = Integer.parseInt(nextBinString, 2); // converts binary of nextBinString into integer 
+		nums.add(nextInt); 
+
 		int counter = 256;
-		while (binString.length()>= bitNum)
+
+		while (binString.length()>= bitNum) // as long as the word has enough bits to convert into an intger 
 		{
 
 			if (nextString!= null)
 			{
+				String currBinString = binString.substring (0,bitNum); // takes the substring of the first probably 9 bits
+				binString= binString.substring(bitNum); // assings binString to the substring 
+				int currInt = Integer.parseInt(currBinString, 2); // changes the binary code to an integer 
+				nums.add(currInt); 
 				dict.put(counter, currString+ nextString.substring(0,1));
 				currString = nextString;
 
 
 
 			}
-			else
+			else // this is the edge case 
 			{
 				dict.put(counter, currString + currString.substring(0,1));
 				currString = currString + currString.substring(0,1);
