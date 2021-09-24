@@ -117,6 +117,7 @@ public class LZWDecoder {
 		LZWDecoder decoder = new LZWDecoder ("011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011", 9, "output"); 
 		System.out.println(decoder.getList()); 
 		System.out.println(decoder.decode()); 
+		System.out.println("helloworld"); 
 	}
 	
 //	class GFG {
