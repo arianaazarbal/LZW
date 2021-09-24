@@ -60,72 +60,47 @@ public class LZWDecoder {
 		return (nums); 
 	}
 
-	/*
-	public void decode ()
-	{
-		for (int x = 0; x<256; x++) // creating the dictionary 
-		{
-			char ch = (char)x;
-			dict.put(x, String.valueOf(ch));
-		}
-		ArrayList <Integer> nums= new ArrayList<Integer> (); // creates an arraylist to put all the numbers when converting from binary to integers 
-		String binStringCopy = binString; // makes copy of string 
-		String currBinString = binString.substring (0,bitNum); // takes the substring of the first probably 9 bits
-		binString= binString.substring(bitNum); // assings binString to the substring 
-		int currInt = Integer.parseInt(currBinString, 2); // changes the binary code to an integer 
-		nums.add(currInt); 
-//		finalOutput = currString;
-		
-		String nextBinString = ""; // intializes the next string fr binary numbers 
-		int nextInt= 0; 
-		String nextString= ""; // initalizes next string for actual letters 
-		
-//		String lastSymbolInDict = "";
-		
-		nextBinString = binString.substring(0, bitNum); // takes the substring of the binString to get the next character after taking the substring of current 
-		binString= binString.substring(bitNum); // chops string off 
-		nextInt = Integer.parseInt(nextBinString, 2); // converts binary of nextBinString into integer 
-		nums.add(nextInt); 
-
-		int counter = 256;
-
-		while (binString.length()>= bitNum) // as long as the word has enough bits to convert into an intger 
-		{
-
-			if (nextString!= null)
-			{
-				String currBinString = binString.substring (0,bitNum); // takes the substring of the first probably 9 bits
-				binString= binString.substring(bitNum); // assings binString to the substring 
-				int currInt = Integer.parseInt(currBinString, 2); // changes the binary code to an integer 
-				nums.add(currInt); 
-				dict.put(counter, currString+ nextString.substring(0,1));
-				currString = nextString;
-
-
-
-			}
-			else // this is the edge case 
-			{
-				dict.put(counter, currString + currString.substring(0,1));
-				currString = currString + currString.substring(0,1);
-			}
-			
-			nextBinString = binString.substring(0, bitNum);
-			binString= binString.substring(bitNum);
-			nextDecimal = Integer.parseInt(nextBinString, 2);
-			nextString = dict.get(nextInt);
-			
-			counter++;
-		}
-		
-		for (int x = 0; x<binStringCopy.length()/bitNum;x++)
-		{
-			String currBinStringCopy = binStringCopy.substring(0,bitNum);
-			binStringCopy= binStringCopy.substring(bitNum);
-			finalOutput+=dict.get(Integer.parseInt(currBinStringCopy, 2));
-		}
+	public String decode () throws IOException {
+		ArrayList<Integer> numbers = getList(); // calls other method to get arraylist of nums
+		int counter=256; // keeps track of how big the hash map is 
+        HashMap <Integer, String> map = new HashMap <Integer,String> (); // intialized and delcres hash map 
+        int current=0; 
+        int next=0; 
+        String word="";// this will eventually be the whole word that will get returned 
+        String combined ="";// string that contains current and next as one string 
+        String wordC=""; // the string version of the number of the current value
+        String wordN=""; // the string version of the number of the next value
+        for (int i=0; i<256; i++){
+            map.put(i, ""+(char)i); // created dictionary assigning ascii values to the first 255 characters
+        }
+        int size=numbers.size(); 
+        for (int i=0; i<size; i++){
+            if (i<numbers.size()-1){ // makess sure that you wont get out of bounds 
+                current=numbers.get(i); // gets first thing in arraylist
+                next=numbers.get(i+1); // gets second thing in arraylist
+                if (next<counter){ // checks to see that next is already in the dictionary
+                    wordC=map.get(current); // converts the numbers into a string 
+                    wordN=map.get(next); // same as above but for next 
+                    combined=wordC+wordN.substring(0,1); // combines current and next's first letter
+                    map.put(counter,combined); // puts the new combined letters into the dictionary 
+                    counter++;// increments counter to fit the new size of map
+                } 
+                else{
+                    wordN=map.get(current); // sets WordN to the current word 
+                    String letter=wordN.substring(0,1); // gets the first letter of the next word 
+                    wordN=wordN+letter; // sets wordN to wordN to the first letter of WordN
+                    map.put(counter,wordN); // adds to Hashmap
+                    counter++; // increments counter
+                }
+               ; 
+            }
+        }
+        for (int i=0; i<numbers.size(); i++){
+            int index=numbers.get(i); 
+           word+=map.get(index); 
+        }
+        return (word); 
 	}
-	*/ 
 	//writes the 
 	public void writeToTxt(String outputFileName) throws FileNotFoundException
 	{
@@ -137,6 +112,7 @@ public class LZWDecoder {
 		public static void main (String [] args) throws IOException{
 		LZWDecoder decoder = new LZWDecoder ("011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011", 9, "output"); 
 		System.out.println(decoder.getList()); 
+		System.out.println(decoder.decode()); 
 	}
 	
 //	class GFG {
