@@ -110,6 +110,10 @@ public class LZWDecoder {
 	}
 
 		public static void main (String [] args) throws IOException{
+		  System.out.print("time in nanoseconds = ");
+    	 System.out.println(System.nanoTime());
+    	 System.out.print("time in milliseconds = ");
+     	System.out.println(System.currentTimeMillis());
 		LZWDecoder decoder = new LZWDecoder ("011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011", 9, "output"); 
 		System.out.println(decoder.getList()); 
 		System.out.println(decoder.decode()); 
