@@ -14,9 +14,9 @@ public class LZWDecoder {
 	private byte [] byteArray;
 	private String finalOutput;
 	
-	public LZWDecoder(String binString, int bitNum, String outputFileName) throws IOException
+	public LZWDecoder(String binString, int bitNum, String outputFileName) throws IOException // this is the constructor 
 	{
-		this.dict = new HashMap <Integer, String>();
+		this.dict = new HashMap <Integer, String>(); // intializes the hash map 
 		this.bitNum = bitNum;
 		this.binString = binString;
 		this.finalOutput = "";
@@ -48,28 +48,28 @@ public class LZWDecoder {
 	
 	public void decode ()
 	{
-		for (int x = 0; x<256; x++)
+		for (int x = 0; x<256; x++) // creating the dictionary 
 		{
 			char ch = (char)x;
 			dict.put(x, String.valueOf(ch));
 		}
-		String binStringCopy = binString;
-		String currBinString = binString.substring (0,bitNum);
-		binString= binString.substring(bitNum);
-		int currDecimal = Integer.parseInt(currBinString, 2);
-		String currString = dict.get(currDecimal);
+		String binStringCopy = binString; // makes copy of string 
+		String currBinString = binString.substring (0,bitNum); // takes the substring of the first probably 9 bits
+		binString= binString.substring(bitNum); // assings binString to the substring 
+		int currInt = Integer.parseInt(currBinString, 2); // changes the binary code to an integer 
+		String currString = dict.get(currInt); // gets the current string by finding the integer into the dictionary 
 //		finalOutput = currString;
 		
 		String nextBinString = "";
-		int nextDecimal= 0;
+		int nextInt= 0;
 		String nextString= "";
 		
 //		String lastSymbolInDict = "";
 		
 		nextBinString = binString.substring(0, bitNum);
 		binString= binString.substring(bitNum);
-		nextDecimal = Integer.parseInt(nextBinString, 2);
-		nextString = dict.get(nextDecimal);
+		nextInt = Integer.parseInt(nextBinString, 2);
+		nextString = dict.get(nextInt);
 		
 		int counter = 256;
 		while (binString.length()>= bitNum)
@@ -92,7 +92,7 @@ public class LZWDecoder {
 			nextBinString = binString.substring(0, bitNum);
 			binString= binString.substring(bitNum);
 			nextDecimal = Integer.parseInt(nextBinString, 2);
-			nextString = dict.get(nextDecimal);
+			nextString = dict.get(nextInt);
 			
 			counter++;
 		}
