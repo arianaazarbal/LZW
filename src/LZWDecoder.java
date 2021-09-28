@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.*;
 
 public class LZWDecoder {
 	
@@ -14,9 +15,10 @@ public class LZWDecoder {
 	private byte [] byteArray;
 	private String finalOutput;
 	
-	public LZWDecoder(String binString, int bitNum, String outputFileName) throws IOException
+	public LZWDecoder(String binString, int bitNum, String outputFileName) throws IOException // this is the constructor 
 	{
-		this.dict = new HashMap <Integer, String>();
+		try {
+		this.dict = new HashMap <Integer, String>(); // intializes the hash map 
 		this.bitNum = bitNum;
 		this.binString = binString;
 		this.finalOutput = "";
@@ -24,12 +26,18 @@ public class LZWDecoder {
 		
 //		File binFile = new File (binFileName);
 //		readBinFile(binFile);
-		decode();
+		//decode();
 		writeToTxt(outputFileName);
 		
+		}
+		catch(Exception e) {
+			System.out.println("File inputed not found"); 
+		}
+
 	}
 	
 	//reads the binary file into a string. not working, so I've bypassed this method for now and just input a binary string into the constructor.
+	/*
 	public void readBinFile(File binFile) throws IOException
 	{
 		FileInputStream is = new FileInputStream(binFile);
@@ -42,73 +50,79 @@ public class LZWDecoder {
 		is.close();
 	}
 	
-
-	
-	public void decode ()
-	{
-		for (int x = 0; x<256; x++)
-		{
-			char ch = (char)x;
-			dict.put(x, String.valueOf(ch));
+*/ 
+	public ArrayList<Integer> getList () throws IOException{
+		String binary = binString; // copies the binary string 
+		String temp=""; // creates temp varibale 
+		ArrayList <Integer> nums= new ArrayList<Integer> (); // creates an arraylist to put all the numbers when converting from binary to integers 
+		while (binary.length()>=bitNum){
+			int number=0; 
+			temp=binary.substring(0,bitNum); // takes substring and sets to temp
+			number=Integer.parseInt(temp,2); // turns binary to integer number 
+			nums.add(number); // adds the number into an arrayList of nums 
+			binary=binary.substring(bitNum);// chops the string off 
 		}
-		String binStringCopy = binString;
-		String currBinString = binString.substring (0,bitNum);
-		binString= binString.substring(bitNum);
-		int currDecimal = Integer.parseInt(currBinString, 2);
-		String currString = dict.get(currDecimal);
-//		finalOutput = currString;
-		
-		String nextBinString = "";
-		int nextDecimal= 0;
-		String nextString= "";
-		
-//		String lastSymbolInDict = "";
-		
-		nextBinString = binString.substring(0, bitNum);
-		binString= binString.substring(bitNum);
-		nextDecimal = Integer.parseInt(nextBinString, 2);
-		nextString = dict.get(nextDecimal);
-		
-		int counter = 256;
-		while (binString.length()>= bitNum)
-		{
 
-			if (nextString!= null)
-			{
-				dict.put(counter, currString+ nextString.substring(0,1));
-				currString = nextString;
-
-
-
-			}
-			else
-			{
-				dict.put(counter, currString + currString.substring(0,1));
-				currString = currString + currString.substring(0,1);
-			}
-			
-			nextBinString = binString.substring(0, bitNum);
-			binString= binString.substring(bitNum);
-			nextDecimal = Integer.parseInt(nextBinString, 2);
-			nextString = dict.get(nextDecimal);
-			
-			counter++;
-		}
-		
-		for (int x = 0; x<binStringCopy.length()/bitNum;x++)
-		{
-			String currBinStringCopy = binStringCopy.substring(0,bitNum);
-			binStringCopy= binStringCopy.substring(bitNum);
-			finalOutput+=dict.get(Integer.parseInt(currBinStringCopy, 2));
-		}
+		return (nums); 
 	}
-	
+
+	public String decode () throws IOException {
+		ArrayList<Integer> numbers = getList(); // calls other method to get arraylist of nums
+		int counter=256; // keeps track of how big the hash map is 
+        HashMap <Integer, String> map = new HashMap <Integer,String> (); // intialized and delcres hash map 
+        int current=0; 
+        int next=0; 
+        String word="";// this will eventually be the whole word that will get returned 
+        String combined ="";// string that contains current and next as one string 
+        String wordC=""; // the string version of the number of the current value
+        String wordN=""; // the string version of the number of the next value
+        for (int i=0; i<256; i++){
+            map.put(i, ""+(char)i); // created dictionary assigning ascii values to the first 255 characters
+        }
+        int size=numbers.size(); 
+        for (int i=0; i<size; i++){
+            if (i<numbers.size()-1){ // makess sure that you wont get out of bounds 
+                current=numbers.get(i); // gets first thing in arraylist
+                next=numbers.get(i+1); // gets second thing in arraylist
+                if (next<counter){ // checks to see that next is already in the dictionary
+                    wordC=map.get(current); // converts the numbers into a string 
+                    wordN=map.get(next); // same as above but for next 
+                    combined=wordC+wordN.substring(0,1); // combines current and next's first letter
+                    map.put(counter,combined); // puts the new combined letters into the dictionary 
+                    counter++;// increments counter to fit the new size of map
+                } 
+                else{
+                    wordN=map.get(current); // sets WordN to the current word 
+                    String letter=wordN.substring(0,1); // gets the first letter of the next word 
+                    wordN=wordN+letter; // sets wordN to wordN to the first letter of WordN
+                    map.put(counter,wordN); // adds to Hashmap
+                    counter++; // increments counter
+                }
+               ; 
+            }
+        }
+        for (int i=0; i<numbers.size(); i++){
+            int index=numbers.get(i); 
+           word+=map.get(index); 
+        }
+        return (word); 
+	}
 	//writes the 
 	public void writeToTxt(String outputFileName) throws FileNotFoundException
 	{
 		PrintWriter output = new PrintWriter(outputFileName);
 		output.print (finalOutput);
 		output.close();
+	}
+
+		public static void main (String [] args) throws IOException{
+		  System.out.print("time in nanoseconds = ");
+    	 System.out.println(System.nanoTime());
+    	 System.out.print("time in milliseconds = ");
+     	System.out.println(System.currentTimeMillis());
+		LZWDecoder decoder = new LZWDecoder ("001100001001100010001100011100000000", 9, "output"); 
+		System.out.println(decoder.getList()); 
+		System.out.println(decoder.decode()); 
 	}
 	
 //	class GFG {
@@ -134,4 +148,3 @@ public class LZWDecoder {
 //	    }
 
 }
-
