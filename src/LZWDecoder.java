@@ -17,6 +17,7 @@ public class LZWDecoder {
 	
 	public LZWDecoder(String binString, int bitNum, String outputFileName) throws IOException // this is the constructor 
 	{
+		try {
 		this.dict = new HashMap <Integer, String>(); // intializes the hash map 
 		this.bitNum = bitNum;
 		this.binString = binString;
@@ -28,6 +29,11 @@ public class LZWDecoder {
 		//decode();
 		writeToTxt(outputFileName);
 		
+		}
+		catch(Exception e) {
+			System.out.println("File inputed not found"); 
+		}
+
 	}
 	
 	//reads the binary file into a string. not working, so I've bypassed this method for now and just input a binary string into the constructor.
