@@ -10,7 +10,7 @@ public class Tester {
      LZW compressor = new LZW(9, "TestFile");
      String testString = compressor.encode("lzw-file1.txt");
      System.out.println (testString);
-     LZWDecoder expander = new LZWDecoder (testString, 9, "TestFile2");
+     //LZWDecoder expander = new LZWDecoder (testString, 9, "TestFile2");
         
     }
 }

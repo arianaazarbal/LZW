@@ -114,10 +114,9 @@ public class LZWDecoder {
     	 System.out.println(System.nanoTime());
     	 System.out.print("time in milliseconds = ");
      	System.out.println(System.currentTimeMillis());
-		LZWDecoder decoder = new LZWDecoder ("011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011011000010110001001100011", 9, "output"); 
+		LZWDecoder decoder = new LZWDecoder ("001100001001100010001100011100000000", 9, "output"); 
 		System.out.println(decoder.getList()); 
 		System.out.println(decoder.decode()); 
-		System.out.println("helloworld"); 
 	}
 	
 //	class GFG {
